@@ -25,19 +25,20 @@ T_SRS = "+proj=somerc +lat_0=46.952405555555555N +lon_0=7.439583333333333E +ellp
 
 app = Flask(__name__)
 
-@app.route('/service.xml', methods=['GET'])
-def service_xml():
+@app.route('/ch/<canton>/dls/service.xml', methods=['GET'])
+@app.route('/dls/service.xml', methods=['GET'])
+def service_xml(canton='gl'):
     easting = request.args.get('easting', '')
     northing = request.args.get('northing', '')
 
-    return "service.xml"
+    return "service.xml" + str(canton)
 
-@app.route('/search/opensearchdescription.xml', methods=['GET'])
-def search_opensearchdescription_xml():
+@app.route('/ch/<canton>/search/opensearchdescription.xml', methods=['GET'])
+def search_opensearchdescription_xml(canton='gl'):
     return "search/opensearchdescription.xml"
 
-@app.route('/search', methods=['GET'])
-def search():
+@app.route('/ch/<canton>/dls', methods=['GET'])
+def dls(canton='gl'):
     request_param = request.args.get('request', '')
     return request_param
 
@@ -45,7 +46,9 @@ def search():
 if __name__ == '__main__':
     app.run(debug=True)
 
-#http://127.0.0.1:5000/search?request=GetDownloadServiceMetadata
+#http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
+#http://127.0.0.1:5000/ch/gl/dls?request=GetDownloadServiceMetadata
+#http://127.0.0.1:5000/ch/gl/dls/service.xml
 
 #http://geodaten.llv.li/atom/service.xml
 
