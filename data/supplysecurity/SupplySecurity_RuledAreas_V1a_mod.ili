@@ -1,0 +1,62 @@
+INTERLIS 2.3;
+
+/** Minimal geodata model
+ * Minimales Geodatenmodell
+ * Modèle de géodonnées minimal
+ * 
+ * BEARBEITET DURCH P. STAUB / FSGEO / KT. GL (CantonCode)
+ */
+!!@ technicalContact=info@bfe.admin.ch
+!!@ furtherInformation=http://www.bfe.admin.ch/geoinformation
+!!@ IDGeoIV=183.1
+MODEL SupplySecurity_RuledAreas_V1 (en)
+AT "mailto:peter.staub@localhost"
+VERSION "2015-04-02"  =
+  IMPORTS GeometryCHLV03_V1,CHAdminCodes_V1,WithOneState_V1;
+
+  DOMAIN
+
+    Text = TEXT*500;
+
+  TOPIC SupplySecurity_RuledAreas_WithOneState =
+
+    CLASS Organisation =
+      Name : MANDATORY SupplySecurity_RuledAreas_V1.Text;
+      Website : URI;
+    END Organisation;
+
+    CLASS RuledArea (ABSTRACT) =
+      Geometry : MANDATORY GeometryCHLV03_V1.MultiSurface;
+      Name : MANDATORY SupplySecurity_RuledAreas_V1.Text;
+      Canton : MANDATORY CHAdminCodes_V1.CHCantonCode;
+      LegalForce : MANDATORY BOOLEAN;
+      BeginningOfLegalForce : INTERLIS.XMLDate;
+      Directive : URI;
+      ModInfo : MANDATORY WithOneState_V1.ModInfo;
+    END RuledArea;
+
+    CLASS RuledArea_Level3
+    EXTENDS RuledArea =
+    END RuledArea_Level3;
+
+    CLASS RuledArea_Level5
+    EXTENDS RuledArea =
+    END RuledArea_Level5;
+
+    CLASS RuledArea_Level7
+    EXTENDS RuledArea =
+    END RuledArea_Level7;
+
+    ASSOCIATION RuledAreaOrganisationOperator =
+      Operator -<> {1} Organisation;
+      RuledArea3 -- {1..*} RuledArea;
+    END RuledAreaOrganisationOperator;
+
+    ASSOCIATION RuledAreaOrganisationOwner =
+      Owner -<> {1} Organisation;
+      RuledArea2 -- {1..*} RuledArea;
+    END RuledAreaOrganisationOwner;
+
+  END SupplySecurity_RuledAreas_WithOneState;
+
+END SupplySecurity_RuledAreas_V1.

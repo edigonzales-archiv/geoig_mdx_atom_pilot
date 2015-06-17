@@ -1,0 +1,88 @@
+reading script c:\iltools\user\script\igcheck\interlis2.cfg ...
+
+******************************
+*                            *
+* iG/Check for INTERLIS 2    *
+*                            *
+* Version 2015.1 06.03.2015  *
+*                            *
+* (c) infoGrips 1997-2014    *
+*                            *
+******************************
+
+******************************
+* License Information:       *
+* Kanton Glarus              *
+* 8750 Glarus                *
+* ICS Kernel Version 2014.0  *
+******************************
+
+License file: c:\iltools\user\license\iltools.lic
+
+
+getting models from C:\iltools\data\supplysecurity.xtf ...
+   getting model file for SupplySecurity_RuledAreas_V1 ...
+      searching in repository user ...
+   model SupplySecurity_RuledAreas_V1 found in repository user
+   model file is c:\iltools\user\models23\SupplySecurity_RuledAreas_V1.ili
+   getting model file for GeometryCHLV03_V1 ...
+      searching in repository user ...
+      searching in repository system ...
+   model GeometryCHLV03_V1 found in repository system
+   model file is c:\iltools\system\models23\GeometryCHLV03_V1.ili
+   getting model file for Units ...
+      searching in repository user ...
+      searching in repository system ...
+   model Units found in repository system
+   model file is c:\iltools\system\models23\Units.ili
+   getting model file for CoordSys ...
+      searching in repository user ...
+      searching in repository system ...
+   model CoordSys found in repository system
+   model file is c:\iltools\system\models23\CoordSys.ili
+   getting model file for CHAdminCodes_V1 ...
+      searching in repository user ...
+      searching in repository system ...
+   model CHAdminCodes_V1 found in repository system
+   model file is c:\iltools\system\models23\CHAdminCodes_V1.ili
+   getting model file for WithOneState_V1 ...
+      searching in repository user ...
+      searching in repository system ...
+   model WithOneState_V1 found in repository system
+   model file is c:\iltools\system\models23\WithOneState_V1.ili
+   model name is SupplySecurity_RuledAreas_V1 (version is 2.3).
+done.
+
+reading precompiled model c:\iltools\user\models23\SupplySecurity_RuledAreas_V1_SupplySecurity_RuledAreas_V1.ilo ...
+done.
+
+reading constraints from c:\iltools\user\models23\SupplySecurity_RuledAreas_V1_SupplySecurity_RuledAreas_V1.ilp ...
+done.
+
+building temporary database for C:\iltools\data\supplysecurity.xtf ...
+done.
+
+input : C:\iltools\data\supplysecurity.xtf
+date  : 12.5.2015
+time  : 8:01:55
+
+area check is on
+unique check is on
+cardinality check is on
+mandatory constraint check is on
+tag order check is off
+external ref check is off
+
+============================================================================================================
+checking basket SupplySecurity_RuledAreas_V1.SupplySecurity_RuledAreas_WithOneState bid=SupplySecurity_RuledAreas_V1.SupplySecurity_RuledAreas_WithOneState ...
+============================================================================================================
+
+Object Statistics
+=================
+
+    8 objects in class SupplySecurity_RuledAreas_WithOneState.Organisation
+   12 objects in class SupplySecurity_RuledAreas_WithOneState.RuledArea_Level5
+   11 objects in class SupplySecurity_RuledAreas_WithOneState.RuledArea_Level7
+
+completed with no errors
+elapsed time: 1 seconds
