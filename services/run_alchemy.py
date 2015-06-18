@@ -1,0 +1,74 @@
+#!venv/bin/python
+from flask import request
+from flask import Flask
+from flask import jsonify
+from flask import json
+from flask import Response
+from flask.ext.sqlalchemy import SQLAlchemy
+
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+
+from logging.handlers import RotatingFileHandler 
+from logging import Formatter
+import logging
+
+app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/metadb/metadb.sqlite'
+db = SQLAlchemy(app)
+
+Base = automap_base()
+
+# engine, suppose it has two tables 'user' and 'address' set up
+engine = create_engine("sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/metadb/metadb.sqlite")
+
+# reflect the tables
+Base.prepare(engine, reflect=True)
+
+# mapped classes are now created with names by default
+# matching that of the table name.
+MetaDb = Base.classes.metadb
+
+session = Session(engine)
+#u1 = session.query(MetaDb).first()
+#print (u1.identifier)
+
+for row in session.query(MetaDb.identifier, MetaDb.title).filter(MetaDb.fullname=='Ed Jones'): 
+    print row.identifier, row.title
+
+@app.route('/dls/service.xml', methods=['GET'])
+def service_xml():
+    easting = request.args.get('easting', '')
+    northing = request.args.get('northing', '')
+
+    return "service.xml"
+
+@app.route('/search/opensearchdescription.xml', methods=['GET'])
+def search_opensearchdescription_xml():
+    return "search/opensearchdescription.xml"
+
+@app.route('/dls', methods=['GET'])
+def dls():
+    request_param = request.args.get('request', '')
+    return request_param
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+#http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
+#http://127.0.0.1:5000/ch/gl/dls?request=GetDownloadServiceMetadata
+#http://127.0.0.1:5000/ch/gl/dls/service.xml
+
+#http://geodaten.llv.li/atom/service.xml
+
+#http://geodaten.llv.li/atom/search/opensearchdescription.xml
+#http://geodaten.llv.li/atom/search/search.php?request=GetDownloadServiceMetadata
+#http://geodaten.llv.li/atom/search/search.php?request=describespatialdataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte
+
+#http://geodaten.llv.li/atom/search/search.php?request=GetSpatialDataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte&language=de&crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F2056&mediatype=text%2Fxml%3Bsubtype%3Dgml%2F3.1.1
+#http://geodaten.llv.li/atom/search/search.php?request=GetSpatialDataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte&language=de&crs=http://www.opengis.net/def/crs/EPSG/0/2056&mediatype=text/xml;subtype=gml/3.1.1
+
+#http://geodaten.llv.li/atom/search/search.php?q=test   

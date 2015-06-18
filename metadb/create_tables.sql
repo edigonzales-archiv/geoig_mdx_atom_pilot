@@ -2,10 +2,13 @@ CREATE TABLE metadb
 (
   pkuid integer NOT NULL,
   identifier varchar NOT NULL,
+  namespace varchar,
   title varchar NOT NULL,
   abstract varchar,
+  metadata_link varchar,
   "type" integer NOT NULL,
   modified datetime,
+  canton varchar,
   x_min float,
   y_min float,
   x_max float,

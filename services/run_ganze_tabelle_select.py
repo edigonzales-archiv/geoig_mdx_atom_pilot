@@ -8,21 +8,16 @@ from flask import render_template
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import cast
-import sqlalchemy
 from logging.handlers import RotatingFileHandler 
 from logging import Formatter
 import logging
-import datetime
-from pytz import timezone
-
-# DON'T FORGET TO LOG!!!!!!
+#import jinja2
 
 app = Flask(__name__)
 
-# We want to use existing tables from the sqlite database.
+# We want to use existing tables in the sqlite database.
 Base = automap_base()
-#engine = create_engine("sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/metadb/metadb.sqlite")
+#engine = create_engine("sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/metadb/metadb.sqlite", encoding='utf8', convert_unicode=True)
 engine = create_engine("sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/metadb/metadb.sqlite", encoding='utf8', convert_unicode=True)
 Base.prepare(engine, reflect=True)
 
@@ -30,45 +25,26 @@ MetaDb = Base.classes.metadb
 session = Session(engine)
 
 @app.route('/dls/service.xml', methods=['GET'])
-def service_xml():    
-    # For correct rendering of the datetime we need a timezone.
-    # Really not sure about this whole timezone stuff:
-    # - May I use %z?
-    # - Is the comparison correct?
-    my_timezone = timezone('Europe/Amsterdam')    
-    
-    # We need to know the date/time of the last modification of *any* data.
-    max_modified = datetime.datetime.strptime( "1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S" )
- 
-    # list for template
+def service_xml():
+    easting = request.args.get('easting', '')
+    northing = request.args.get('northing', '')
+
     items = []
- 
-    # If you only want all the rows w/o frills you hast have to use .query(MetaDb).
-    # You could also do the bounding box thing here in the application.
-    for row in session.query(MetaDb.identifier, MetaDb.namespace, MetaDb.title, MetaDb.abstract, MetaDb.metadata_link, MetaDb.modified, MetaDb.canton, \
-        (cast(MetaDb.y_min, sqlalchemy.String) + " " + cast(MetaDb.x_min, sqlalchemy.String) + " " + \
-        cast(MetaDb.y_max, sqlalchemy.String)  + " " + cast(MetaDb.x_max, sqlalchemy.String)).label("bbox")).filter(MetaDb.type==100):
+    #entries = [dict(title=row[0], text=row[1]) for row in session.query(MetaDb).filter(MetaDb.type==100)] 
+    #print entries
+        #print row.identifier, row.title
+        #print row
+         
+        #items.append(row)
         
-        item = {}
-        item['identifier'] = row.identifier
-        item['namespace'] = row.namespace
-        item['title'] = row.title
-        item['abstract'] = row.abstract
-        item['metadata_link'] = row.metadata_link
-        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')        
-        item['canton'] = row.canton
-        item['bbox'] = row.bbox
+    #for row in session.query(MetaDb.filter(MetaDb.type==100):
+    for row in session.query(MetaDb.identifier, MetaDb.title).filter(MetaDb.type==100):
+        print row
+        #print row2dict(row)
+        #items.append(row2dict(row))
         
-        if row.modified > max_modified:
-            max_modified = row.modified
-        
-        items.append(item)
-                
-    max_modified = my_timezone.localize(max_modified).strftime('%Y-%m-%dT%H:%M:%S%z')
-    print max_modified
-        
-    return render_template('servicefeed.xml', items = items, max_modified = max_modified)
-    #return "service.xml"
+    #return render_template('servicefeed.xml', items = items)
+    return "service.xml"
 
 @app.route('/search/opensearchdescription.xml', methods=['GET'])
 def search_opensearchdescription_xml():

@@ -38,6 +38,7 @@ git clone https://edigonzales@bitbucket.org/edigonzales/fuuuuuuuuuuuuuuuuuuuuuuu
 virtualenv venv
 source venv/bin/activate
 pip install flask
+pip install pytz
 ```
 
 ### Apache config file

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0" xml:lang="de">
+  <title>INSPIRE Download Service</title>
+  <subtitle>INSPIRE Atom Feed Services Liechtenstein</subtitle>
+  <link rel="describedby" href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=9c0614f8-7268-48df-b702-24f7b2264b8c" hreflang="de" type="application/vnd.ogc.csw.GetRecordByIdResponse_xml"/>
+  <link rel="self" href="http://geodaten.llv.li/atom/service.xml" type="application/atom+xml" hreflang="de" title="INSPIRE Download Service"/>
+  <link rel="search" href="http://geodaten.llv.li/atom/search/opensearchdescription.xml" title="Opensearch Description" type="application/opensearchdescription+xml"/>
+  <id>http://geodaten.llv.li/atom/service.xml</id>
+  <rights>Lizenzpflichtig</rights>
+  <updated>2015-04-17T10:22:03+02:00</updated>
+  <author>
+    <name>Peter Jehle</name>
+    <email>peter.jehle@llv.li</email>
+  </author>
+  <entry>
+    <title>Denkmalschutzobjekte</title>
+    <inspire_dls:spatial_dataset_identifier_code>tba_denkmalschutzobjekte</inspire_dls:spatial_dataset_identifier_code>
+    <inspire_dls:spatial_dataset_identifier_namespace>http://www.llv.li</inspire_dls:spatial_dataset_identifier_namespace>
+    <category term="http://www.opengis.net/def/crs/epsg/0/4258" label="ETRS89"/>
+    <author>
+      <name>Peter Jehle</name>
+      <email>peter.jehle@llv.li</email>
+    </author>
+    <id>http://geodaten.llv.li/atom/88c57464-3a56-41c1-b8d4-45b019b62ce2.xml</id>
+    <link href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=88c57464-3a56-41c1-b8d4-45b019b62ce2" rel="describedby" hreflang="de" type="application/vnd.iso.19139+xml"/>
+    <link href="http://geodaten.llv.li/atom/88c57464-3a56-41c1-b8d4-45b019b62ce2.xml" rel="alternate" hreflang="de" type="application/atom+xml"/>
+    <rights>gebührenpflichtig</rights>
+    <summary type="html"><![CDATA[<div>Denkmalgeschützte Gebäude und Stätten Liechtensteins. Die räumlich darstellbaren denkmalgeschützten Objekte werden in diesem Datensatz als Inventar aufgezeigt. Weitere Informationen zu den Objekten werden in einer Datenbank bei der Abteilung Denkmalpflege des Amtes für Kultur verwaltet.</div>]]></summary>
+    <updated>2015-04-17T10:19:36+02:00</updated>
+    <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+    <published>2010-05-19T00:00:00+02:00</published>
+  </entry>
+  <entry>
+    <title>Archäologische Perimeter</title>
+    <inspire_dls:spatial_dataset_identifier_code>aku:arch_perimter</inspire_dls:spatial_dataset_identifier_code>
+    <inspire_dls:spatial_dataset_identifier_namespace>http://www.llv.li</inspire_dls:spatial_dataset_identifier_namespace>
+    <category term="http://www.opengis.net/def/crs/epsg/0/4258" label="ETRS89"/>
+    <author>
+      <name>Peter Jehle</name>
+      <email>peter.jehle@llv.li</email>
+    </author>
+    <id>http://geodaten.llv.li/atom/941ab829-1128-4798-a545-2cd29e7ce611.xml</id>
+    <link href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=941ab829-1128-4798-a545-2cd29e7ce611" rel="describedby" hreflang="de" type="application/vnd.iso.19139+xml"/>
+    <link href="http://geodaten.llv.li/atom/941ab829-1128-4798-a545-2cd29e7ce611.xml" rel="alternate" hreflang="de" type="application/atom+xml"/>
+    <rights>gebührenpflichtig</rights>
+    <summary type="html"><![CDATA[<div>Gebiete mit vermuteten oder nachgewiesenen archäologischen Fundstellen Liechtensteins. Innerhalb des archäologischen Perimeters ist im Baubewilligungsverfahren mit Auflagen zu rechnen. Zudem sind die Daten wegen dem Schutz von Kulturgütern ausserhalb des Baugebietes nicht öffentlich.</div>]]></summary>
+    <updated>2015-04-17T10:19:35+02:00</updated>
+    <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+    <published>2000-01-01T00:00:00+01:00</published>
+  </entry>
+  <entry>
+    <title>Hoheitsgrenzen Liechtenstein</title>
+    <inspire_dls:spatial_dataset_identifier_code>abi:hoheitsgrenzen</inspire_dls:spatial_dataset_identifier_code>
+    <inspire_dls:spatial_dataset_identifier_namespace>http://www.llv.li</inspire_dls:spatial_dataset_identifier_namespace>
+    <category term="http://www.opengis.net/def/crs/epsg/0/4258" label="ETRS89"/>
+    <category term="http://www.opengis.net/def/crs/epsg/0/21781" label="LV03"/>
+    <author>
+      <name>Peter Jehle</name>
+      <email>peter.jehle@llv.li</email>
+    </author>
+    <id>http://geodaten.llv.li/atom/7dd0cb7f-43f9-4db4-b83f-66b43a47f943.xml</id>
+    <link href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=7dd0cb7f-43f9-4db4-b83f-66b43a47f943" rel="describedby" hreflang="de" type="application/vnd.iso.19139+xml"/>
+    <link href="http://geodaten.llv.li/atom/7dd0cb7f-43f9-4db4-b83f-66b43a47f943.xml" rel="alternate" hreflang="de" type="application/atom+xml"/>
+    <rights>gebührenpflichtig</rights>
+    <summary type="html"><![CDATA[<div>Landesgrenzen und Gemeindegrenze Liechtenstein. Die Daten der Landesgrenze liegen aufgrund der Staatsverträge mit der Schweiz und Österreich vor. Die Gemeindegrenzen basieren auf den Daten der Amtlichen Vermessung</div>]]></summary>
+    <updated>2015-04-17T10:19:59+02:00</updated>
+    <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+    <published>2013-11-12T00:00:00+01:00</published>
+  </entry>
+  <entry>
+    <title>Geographische Bezeichnungen</title>
+    <inspire_dls:spatial_dataset_identifier_code>abi_geographical_names</inspire_dls:spatial_dataset_identifier_code>
+    <inspire_dls:spatial_dataset_identifier_namespace>http://www.llv.li</inspire_dls:spatial_dataset_identifier_namespace>
+    <category term="http://www.opengis.net/def/crs/epsg/0/4258" label="ETRS89"/>
+    <category term="http://www.opengis.net/def/crs/epsg/0/21781" label="LV03"/>
+    <author>
+      <name>Peter Jehle</name>
+      <email>peter.jehle@llv.li</email>
+    </author>
+    <id>http://geodaten.llv.li/atom/ca6eece7-d225-47a3-8f30-efed4946477a.xml</id>
+    <link href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=ca6eece7-d225-47a3-8f30-efed4946477a" rel="describedby" hreflang="de" type="application/vnd.iso.19139+xml"/>
+    <link href="http://geodaten.llv.li/atom/ca6eece7-d225-47a3-8f30-efed4946477a.xml" rel="alternate" hreflang="de" type="application/atom+xml"/>
+    <rights>gebührenpflichtig</rights>
+    <summary type="html"><![CDATA[<div>Nomenklatur (Flur-, Orts-, Geländenamen) Liechtenstein</div>]]></summary>
+    <updated>2015-04-17T10:21:49+02:00</updated>
+    <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+    <published>2015-04-16T00:00:00+02:00</published>
+  </entry>
+</feed>
