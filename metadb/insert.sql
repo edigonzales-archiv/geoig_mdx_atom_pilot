@@ -17,5 +17,8 @@ INSERT INTO metadb_relation (metadb_id_parent, metadb_id_child) VALUES ('ea5c61e
 --INSERT INTO metadb_relation (metadb_id_parent, metadb_id_child) VALUES ('ea5c61e7-1be8-4c3f-b7aa-4aa4f35072db', '25701ebd-0464-480e-917f-3151eb5ddb8c');
 
 
-INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/9565af3d-9d96-44bb-a9f8-de8e405c56f3_LV03_xtf.xtf', 'text/x-interlis23', 'INTERLIS23', '21781', 'LV03', '2015-04-01 06:00:00');
-INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/9565af3d-9d96-44bb-a9f8-de8e405c56f3_LV03_gml.gml', 'application/gml+xml;version=3.2', 'GML 3.2.1', '21781', 'LV03', '2015-04-01 06:00:00');
+INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/9565af3d-9d96-44bb-a9f8-de8e405c56f3_LV03_xtf.xtf', 'text/x-interlis23', 'INTERLIS23', '21781', 'CH1903/LV03', '2015-04-01 06:00:00');
+INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/9565af3d-9d96-44bb-a9f8-de8e405c56f3_LV03_gml.gml', 'application/gml+xml;version=3.2', 'GML 3.2.1', '21781', 'CH1903/LV03', '2015-04-01 06:00:00');
+
+
+<div style="float:left;"><img height="200" src="http://mdi.niedersachsen.de/preview_browser_metadata/Schweinswal_2010.jpg" alt="Vorschaugrafik" />

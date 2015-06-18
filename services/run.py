@@ -27,10 +27,11 @@ engine = create_engine("sqlite://///home/stefan/Projekte/geoig_mdx_atom_pilot/me
 Base.prepare(engine, reflect=True)
 
 MetaDb = Base.classes.metadb
+OnlineDataset = Base.classes.online_dataset
 session = Session(engine)
 
 @app.route('/dls/service.xml', methods=['GET'])
-def service_xml():    
+def service_feed_xml():    
     # For correct rendering of the datetime we need a timezone.
     # Really not sure about this whole timezone stuff:
     # - May I use %z?
@@ -68,23 +69,46 @@ def service_xml():
     print max_modified
         
     return render_template('servicefeed.xml', items = items, max_modified = max_modified)
-    #return "service.xml"
 
 @app.route('/search/opensearchdescription.xml', methods=['GET'])
 def search_opensearchdescription_xml():
     return "search/opensearchdescription.xml"
 
-@app.route('/dls', methods=['GET'])
-def dls():
-    request_param = request.args.get('request', '')
-    return request_param
+@app.route('/dls/<metadb_id>', methods=['GET'])
+def dataset_feed_xml(metadb_id):
+    metadb_id = metadb_id.split(".")[0]
+    
+    # see above
+    items = []
+    my_timezone = timezone('Europe/Amsterdam')    
+    max_modified = datetime.datetime.strptime( "1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S" )
+
+    
+    for row in session.query(OnlineDataset.metadb_id, OnlineDataset.uri, OnlineDataset.format_mime, \
+        OnlineDataset.format_txt, OnlineDataset.srs_epsg, OnlineDataset.srs_txt, OnlineDataset.modified, (MetaDb.title +
+        " - Bezugssystem " + OnlineDataset.srs_txt + " - Format " + OnlineDataset.format_txt).label("dataset_title")).join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier).filter(OnlineDataset.metadb_id==metadb_id).order_by(OnlineDataset.uri):    
+        
+        print row.dataset_title
+        #
+        item = {}
+        item['identifier'] = row.identifier
+        item['namespace'] = row.namespace
+        item['title'] = row.title
+        item['abstract'] = row.abstract
+        item['metadata_link'] = row.metadata_link
+        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')        
+        item['canton'] = row.canton
+        item['bbox'] = row.bbox
+        
+        if row.modified > max_modified:
+            max_modified = row.modified
+        
+        items.append(item)
+        
+    return metadb_id
 
 
-def row2dict(row):
-    d = {}
-    for column in row.__table__.columns:
-        d[column.name] = unicode(getattr(row, column.name))
-    return d
+
 
 if __name__ == '__main__':
     app.run(debug=True)

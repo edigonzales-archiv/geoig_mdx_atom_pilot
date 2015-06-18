@@ -14,14 +14,21 @@
     </author>
     {%for item in items %}
     <entry>
-        {{item['title']}}
-        {{item['identifier']}}
-        {{item['namespace']}}
-        {{item['abstract']}}
-        {{item['metadata_link']}}
-        {{item['modified']}}
-        {{item['canton']}}
-        {{item['bbox']}}
+        <title>{{item['title']}}</title>  
+        <summary type="html"><![CDATA[<div>{{item['abstract']}}</div>]]></summary>
+        <inspire_dls:spatial_dataset_identifier_code>{{item['identifier']}}</inspire_dls:spatial_dataset_identifier_code>
+        <inspire_dls:spatial_dataset_identifier_namespace>{{item['namespace']}}</inspire_dls:spatial_dataset_identifier_namespace>          
+        <category term="http://www.opengis.net/def/crs/EPSG/0/21781" label="LV03"/>
+        <author>
+            <name>Stefan Ziegler / Amt für Geoinformation Kanton Solothurn</name>
+            <email>stefan.ziegler@bd.so.ch</email>
+        </author>      
+        <id>{{item['identifier']}}.xml</id>   
+        <link href="{{item['metadata_url']}}" rel="describedby" type="application/vnd.ogc.csw.GetRecordByIdResponse_xml" title="Dataset Metadata"/>   
+        <link href="{{item['identifier']}}.xml" rel="alternate" type="application/atom+xml" title="Dataset Feed" />
+        <rights>Daten dürfen frei genutzt werden (siehe Lizenzbestimmungen).</rights>
+        <updated>{{item['modified']}}</updated>
+        <georss:box>{{item['bbox']}}</georss:box>                          
     </entry>
     {%endfor%}
 </feed>

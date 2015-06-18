@@ -17,3 +17,8 @@ ORDER BY m.title;
 SELECT *
 FROM metadb
 WHERE "type" == 100
+
+-- Datasets
+SELECT *
+FROM online_dataset
+WHERE metadb_id = '9565af3d-9d96-44bb-a9f8-de8e405c56f3'
