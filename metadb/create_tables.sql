@@ -9,6 +9,7 @@ CREATE TABLE metadb
   "type" integer NOT NULL,
   modified datetime,
   canton varchar,
+  data_responsibility varchar,
   x_min float,
   y_min float,
   x_max float,

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss"  xmlns:gml="http://www.opengis.net/gml" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0"  xml:lang="de">
+<title>Hoheitsgrenzen Liechtenstein</title>
+<link href="http://geodaten.llv.li/atom/7dd0cb7f-43f9-4db4-b83f-66b43a47f943.xml" rel="self" type="application/atom+xml" hreflang="de" title="Selbstreferenz"></link>
+<link href="http://geodaten.llv.li/atom/service.xml" rel="up"></link>
+<link href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=7dd0cb7f-43f9-4db4-b83f-66b43a47f943" rel="describedby" hreflang="de"></link>
+<id>http://geodaten.llv.li/atom/7dd0cb7f-43f9-4db4-b83f-66b43a47f943.xml</id>
+<rights>gebührenpflichtig</rights>
+<updated>2015-04-17T10:22:03+02:00</updated>
+<author>
+<name>Peter Jehle</name>
+<email>peter.jehle@llv.li</email>
+</author>
+<entry>
+  <category label="ETRS89" term="http://www.opengis.net/def/crs/EPSG/0/4258" />
+  <id>http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_ETRS89_GML321.xml</id>
+  <link rel="alternate" href="http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_ETRS89_GML321.xml" length="5467292" type="application/gml+xml;version=3.2" hreflang="de"></link>
+  <published>2013-11-12T00:00:00+01:00</published>
+  <summary type="html"><![CDATA[<div>Landesgrenzen und Gemeindegrenze Liechtenstein. Die Daten der Landesgrenze liegen aufgrund der Staatsverträge mit der Schweiz und Österreich vor. Die Gemeindegrenzen basieren auf den Daten der Amtlichen Vermessung</div>]]></summary>
+  <title>Hoheitsgrenzen Liechtenstein - Bezugssystem ETRS89 - Format GML 3.2.1</title>
+  <updated>2015-04-17T10:19:46+02:00</updated>
+  <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+</entry>
+<entry>
+  <category label="LV03" term="http://www.opengis.net/def/crs/EPSG/0/21781" />
+  <id>http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_LV03_itf.itf</id>
+  <link rel="alternate" href="http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_LV03_itf.itf" length="768487" type="text/interlis1" hreflang="de"></link>
+  <published>2013-11-12T00:00:00+01:00</published>
+  <summary type="html"><![CDATA[<div>Landesgrenzen und Gemeindegrenze Liechtenstein. Die Daten der Landesgrenze liegen aufgrund der Staatsverträge mit der Schweiz und Österreich vor. Die Gemeindegrenzen basieren auf den Daten der Amtlichen Vermessung</div>]]></summary>
+  <title>Hoheitsgrenzen Liechtenstein - Bezugssystem LV03 - Format INTERLIS1</title>
+  <updated>2015-04-17T10:19:54+02:00</updated>
+  <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+</entry>
+<entry>
+  <category label="LV03" term="http://www.opengis.net/def/crs/EPSG/0/21781" />
+  <id>http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_LV03_xtf.xtf</id>
+  <link rel="alternate" href="http://geodaten.llv.li/atom/data/7dd0cb7f-43f9-4db4-b83f-66b43a47f943_LV03_xtf.xtf" length="3958593" type="text/x-interlis23" hreflang="de"></link>
+  <published>2013-11-12T00:00:00+01:00</published>
+  <summary type="html"><![CDATA[<div>Landesgrenzen und Gemeindegrenze Liechtenstein. Die Daten der Landesgrenze liegen aufgrund der Staatsverträge mit der Schweiz und Österreich vor. Die Gemeindegrenzen basieren auf den Daten der Amtlichen Vermessung</div>]]></summary>
+  <title>Hoheitsgrenzen Liechtenstein - Bezugssystem LV03 - Format INTERLIS23</title>
+  <updated>2015-04-17T10:19:59+02:00</updated>
+  <georss:polygon>47.048 9.472 47.048 9.636 47.271 9.636 47.271 9.472 47.048 9.472</georss:polygon>
+</entry>
+</feed>

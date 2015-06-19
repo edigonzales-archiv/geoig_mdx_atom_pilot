@@ -30,8 +30,9 @@ MetaDb = Base.classes.metadb
 OnlineDataset = Base.classes.online_dataset
 session = Session(engine)
 
+@app.route('/dls/ch/<canton>/<data_responsibility>/service.xml', methods=['GET'])
 @app.route('/dls/service.xml', methods=['GET'])
-def service_feed_xml():    
+def service_feed_xml(canton='gl', data_responsibility='efs'):    
     # For correct rendering of the datetime we need a timezone.
     # Really not sure about this whole timezone stuff:
     # - May I use %z?
@@ -48,7 +49,8 @@ def service_feed_xml():
     # You could also do the bounding box thing here in the application.
     for row in session.query(MetaDb.identifier, MetaDb.namespace, MetaDb.title, MetaDb.abstract, MetaDb.metadata_link, MetaDb.modified, MetaDb.canton, \
         (cast(MetaDb.y_min, sqlalchemy.String) + " " + cast(MetaDb.x_min, sqlalchemy.String) + " " + \
-        cast(MetaDb.y_max, sqlalchemy.String)  + " " + cast(MetaDb.x_max, sqlalchemy.String)).label("bbox")).filter(MetaDb.type==100):
+        cast(MetaDb.y_max, sqlalchemy.String)  + " " + cast(MetaDb.x_max, sqlalchemy.String)).label("bbox")). \
+        filter(MetaDb.type==100, MetaDb.canton==canton, MetaDb.data_responsibility==data_responsibility):
         
         item = {}
         item['identifier'] = row.identifier
@@ -64,9 +66,9 @@ def service_feed_xml():
             max_modified = row.modified
         
         items.append(item)
-                
+    
+    # This is for the header of the template (outside the for loop).
     max_modified = my_timezone.localize(max_modified).strftime('%Y-%m-%dT%H:%M:%S%z')
-    print max_modified
         
     return render_template('servicefeed.xml', items = items, max_modified = max_modified)
 
@@ -74,8 +76,8 @@ def service_feed_xml():
 def search_opensearchdescription_xml():
     return "search/opensearchdescription.xml"
 
-@app.route('/dls/<metadb_id>', methods=['GET'])
-def dataset_feed_xml(metadb_id):
+@app.route('/dls/ch/<canton>/<data_responsibility>/<metadb_id>', methods=['GET'])
+def dataset_feed_xml(canton, data_responsibility, metadb_id):
     metadb_id = metadb_id.split(".")[0]
     
     # see above
@@ -83,21 +85,26 @@ def dataset_feed_xml(metadb_id):
     my_timezone = timezone('Europe/Amsterdam')    
     max_modified = datetime.datetime.strptime( "1900-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S" )
 
-    
     for row in session.query(OnlineDataset.metadb_id, OnlineDataset.uri, OnlineDataset.format_mime, \
-        OnlineDataset.format_txt, OnlineDataset.srs_epsg, OnlineDataset.srs_txt, OnlineDataset.modified, (MetaDb.title +
-        " - Bezugssystem " + OnlineDataset.srs_txt + " - Format " + OnlineDataset.format_txt).label("dataset_title")).join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier).filter(OnlineDataset.metadb_id==metadb_id).order_by(OnlineDataset.uri):    
-        
-        print row.dataset_title
-        #
+        OnlineDataset.format_txt, OnlineDataset.srs_epsg, OnlineDataset.srs_txt, OnlineDataset.modified, MetaDb.title, \
+        MetaDb.abstract, (MetaDb.title + \
+        " - Bezugssystem " + OnlineDataset.srs_txt + " - Format " + OnlineDataset.format_txt).label("dataset_title"), \
+        (cast(MetaDb.y_min, sqlalchemy.String) + " " + cast(MetaDb.x_min, sqlalchemy.String) + " " + \
+        cast(MetaDb.y_max, sqlalchemy.String)  + " " + cast(MetaDb.x_max, sqlalchemy.String)).label("bbox")) \
+        .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) \
+        .filter(OnlineDataset.metadb_id==metadb_id).order_by(OnlineDataset.uri):    
+
         item = {}
-        item['identifier'] = row.identifier
-        item['namespace'] = row.namespace
+        item['metadb_id'] = row.metadb_id
+        item['uri'] = row.uri
+        item['format_mime'] = row.format_mime
+        item['format_txt'] = row.format_txt
+        item['srs_epsg'] = row.srs_epsg
+        item['srs_txt'] = row.srs_txt
+        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')
         item['title'] = row.title
         item['abstract'] = row.abstract
-        item['metadata_link'] = row.metadata_link
-        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')        
-        item['canton'] = row.canton
+        item['dataset_title'] = row.dataset_title
         item['bbox'] = row.bbox
         
         if row.modified > max_modified:
@@ -105,7 +112,12 @@ def dataset_feed_xml(metadb_id):
         
         items.append(item)
         
-    return metadb_id
+    # These are some variables we use in the header of the template (outside the for loop).
+    if len(items):
+        title = items[0]['title']
+        identifier = items[0]['metadb_id']
+        
+    return render_template('datasetfeed.xml', items = items, canton = canton, data_responsibility = data_responsibility, max_modified = max_modified, title = title, identifier = identifier)
 
 
 
@@ -113,6 +125,7 @@ def dataset_feed_xml(metadb_id):
 if __name__ == '__main__':
     app.run(debug=True)
 
+#http://127.0.0.1:5000/dls/ch/gl/efs/service.xml
 #http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
 #http://127.0.0.1:5000/ch/gl/dls?request=GetDownloadServiceMetadata
 #http://127.0.0.1:5000/ch/gl/dls/service.xml
