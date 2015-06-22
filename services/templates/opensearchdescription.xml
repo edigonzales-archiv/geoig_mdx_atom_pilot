@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <!-- Schema location of opensearch.xsd is not found. Necessary? -->
-    <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://a9.com/-/spec/opensearch/1.1/OpenSearch.xsd">
+<!-- xsi:schemaLocation not found. Important? -->
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://a9.com/-/spec/opensearch/1.1/OpenSearch.xsd">
     <ShortName>INSPIRE Download Service</ShortName>
     <Description>INSPIRE Atom Feed Services -- OpenSearch Service</Description>
-    <Url type="application/opensearchdescription+xml" rel="self" template="http://geodaten.llv.li/atom/search/search.php"/>
-    <Url type="text/html" rel="results" template="http://geodaten.llv.li/atom/search/search.php?q={searchTerms}"/>
-    <Url type="application%2Fgml%2Bxml%3Bversion%3D3.2" rel="results" template="http://geodaten.llv.li/atom/search/search.php?spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;mediatype=application%2Fgml%2Bxml%3Bversion%3D3.2&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
-    <Url type="application%2Fx-shapefile" rel="results" template="http://geodaten.llv.li/atom/search/search.php?spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;mediatype=application%2Fx-shapefile&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
-    <Url type="text%2Finterlis1" rel="results" template="http://geodaten.llv.li/atom/search/search.php?spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;mediatype=text%2Finterlis1&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
-    <Url type="text%2Fx-interlis23" rel="results" template="http://geodaten.llv.li/atom/search/search.php?spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;mediatype=text%2Fx-interlis23&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
-    <Url type="application/atom+xml" rel="describedby" template="http://geodaten.llv.li/atom/search/search.php?spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;mediatype=text%2Fx-interlis23&amp;language={language?}&amp;q={searchTerms?}"/>
+    <Url type="application/opensearchdescription+xml" rel="self" template="{{search_url}}/opensearchdescription.xml"/>
+    <Url type="text/html" rel="results" template="{{search_url}}?q={searchTerms}"/>
+    {%for n in mime_types %}
+    <Url type="application/atom+xml" rel="describedby" template="{{search_url}}?request=DescribeSpatialDataSet&amp;spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;type={{n}}&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
+    {%endfor%}  
+    {%for n in mime_types %}
+    <Url type="{{n}}" rel="results" template="{{search_url}}?request=GetSpatialDataSet&amp;spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;type={{n}}&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
+    {%endfor%}        
+
     <Contact>stefan.ziegler@bd.so.ch</Contact>
     <LongName>INSPIRE Atom Feed Services</LongName>
     
@@ -17,7 +19,6 @@
     <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="aku:arch_perimter" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/4258" language="de" title="Archäologische Perimeter  ETRS89" count="1" />
     <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="abi:hoheitsgrenzen" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/21781" language="de" title="Hoheitsgrenzen Liechtenstein  LV03" count="1" />
     <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="abi_geographical_names" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/21781" language="de" title="Geographische Bezeichnungen  LV03" count="1" />
-    
     <Developer>Stefan Ziegler</Developer>
     <Language>de</Language>
 </OpenSearchDescription>

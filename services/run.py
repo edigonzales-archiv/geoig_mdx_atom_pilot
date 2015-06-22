@@ -5,10 +5,14 @@ from flask import jsonify
 from flask import json
 from flask import Response
 from flask import render_template
+from flask import make_response
+from flask import abort
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from sqlalchemy.sql.expression import cast
+from sqlalchemy.orm.exc import NoResultFound 
+from sqlalchemy.orm.exc import MultipleResultsFound
 import sqlalchemy
 from logging.handlers import RotatingFileHandler 
 from logging import Formatter
@@ -16,9 +20,14 @@ import logging
 import datetime
 from pytz import timezone
 
-URL = "http://www.catais.org/geoig/services/dls"
+#SERVICE_URL = "http://www.catais.org/geoig/services/dls"
+#SEARCH_URL = "http://www.catais.org/geoig/services/search"
+SERVICE_URL = "http://127.0.0.1:5000/dls"
+SEARCH_URL = "http://127.0.0.1:5000/search"
+
 
 # DON'T FORGET TO LOG!!!!!!
+# http://flask-restful.readthedocs.org/en/latest/reqparse.html
 
 app = Flask(__name__)
 
@@ -58,15 +67,12 @@ def service_feed_xml(canton='', data_responsibility=''):
         
     if canton:
         query = query.filter(MetaDb.canton==canton)
-        service_url = URL + "/ch/" + canton
-        
+        service_url = SERVICE_URL + "/ch/" + canton
         
     if data_responsibility:
         query = query.filter(MetaDb.data_responsibility==data_responsibility)   
-        service_url = service_url + "/" + data_responsibility
-        
-    service_url = service_url + "/service.xml"
-        
+        service_url += "/" + data_responsibility
+                
     for row in query:
         item = {}
         item['identifier'] = row.identifier
@@ -86,8 +92,9 @@ def service_feed_xml(canton='', data_responsibility=''):
     # This is for the header of the template (outside the for loop).
     max_modified = my_timezone.localize(max_modified).strftime('%Y-%m-%dT%H:%M:%S%z')
     
-    print items
-    return render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url)
+    response = make_response(render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url))
+    response.headers['Content-Type'] = 'text/xml; charset=utf-8'
+    return response    
 
 @app.route('/dls/ch/<canton>/<data_responsibility>/<metadb_id>', methods=['GET'])
 @app.route('/dls/ch/<canton>/<metadb_id>', methods=['GET'])
@@ -126,27 +133,52 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
             max_modified = row.modified
         
         items.append(item)
-        
+    
     if canton:
-        service_url = URL + "/ch/" + canton
+        service_url = SERVICE_URL + "/ch/" + canton
         
     if data_responsibility:
-        service_url = service_url + "/" + data_responsibility
+        service_url += "/" + data_responsibility
     
     # These are some variables we use in the header of the template (outside the for loop).
     if len(items):
         title = items[0]['title']
         identifier = items[0]['metadb_id']
         
-    return render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified, title = title, identifier = identifier)
+    response = make_response(render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified, title = title, identifier = identifier))
+    response.headers['Content-Type'] = 'text/xml; charset=utf-8'
+    return response    
 
 @app.route('/search/ch/<canton>/<data_responsibility>/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/ch/<canton>/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/ch/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/opensearchdescription.xml', methods=['GET'])
 def opensearchdescription_xml(canton='', data_responsibility=''):
+    # Create the correct url depending on the request.
+    if canton:
+        search_url = SEARCH_URL + "/ch/" + canton
+        
+    if data_responsibility:
+        search_url = search_url + "/" + data_responsibility
 
-    return "search/opensearchdescription.xml"
+    # Get all possible formats (mime types).
+    # NEEDS TO BE TESTED!!!
+    query = session.query(OnlineDataset.format_mime) \
+        .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) 
+        
+    if canton:
+        query = query.filter(MetaDb.canton==canton)
+        
+    if data_responsibility:
+        query = query.filter(MetaDb.data_responsibility==data_responsibility)   
+
+    mime_types = []
+    for row in query.distinct().order_by(OnlineDataset.format_mime):
+        mime_types.append(row.format_mime)
+
+    response = make_response(render_template('opensearchdescription.xml', search_url = search_url, mime_types = mime_types))
+    response.headers['Content-Type'] = 'text/xml; charset=utf-8'
+    return response    
 
 @app.route('/search/ch/<canton>/<data_responsibility>', methods=['GET'])
 @app.route('/search/ch/<canton>', methods=['GET'])
@@ -157,6 +189,53 @@ def search(canton='', data_responsibility=''):
     
     if request_param == "GetDownloadServiceMetadata":
         return service_feed_xml(canton, data_responsibility)
+        
+    elif request_param == "DescribeSpatialDataSet":
+        identifier_code = request.args.get('spatial_dataset_identifier_code', '')
+        identifier_namespace = request.args.get('spatial_dataset_identifier_namespace', '')
+        type = request.args.get('type', '')
+        crs = request.args.get('crs', '')
+        # language is ignored
+        # q is ignored
+        
+        if not identifier_code:
+            abort(404)
+        if not identifier_namespace:
+            abort(404)
+        if not type:
+            abort(404)
+        if not crs:
+            abort(404)
+        
+        # We just need the pure epsg number.
+        epsg = crs.split("/")[-1]
+                    
+        # Find dataset in meta database.
+        try:
+            dataset = session.query(OnlineDataset.metadb_id) \
+                .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) \
+                .filter(OnlineDataset.metadb_id==identifier_code) \
+                .filter(MetaDb.namespace==identifier_namespace) \
+                .filter(OnlineDataset.format_mime==type) \
+                .filter(OnlineDataset.srs_epsg==epsg).one()
+                
+        # What is the response for these exceptions?
+        except MultipleResultsFound, e:
+            print e
+            abort(404)
+        except NoResultFound, e:
+            print e
+            abort(404)
+    
+        return dataset_feed_xml(dataset.metadb_id, canton, data_responsibility)
+        
+    
+    elif request_param == "GetSpatialDataSet":
+        print "GetSpatialDataSet"
+        
+    else:
+        abort(404)
+    
 
     return request_param    
 
@@ -164,6 +243,10 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
+# Achtung Pluszeichen in Mimetype!
+#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml+xml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0/21781
+#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml%2Bxml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0%2F21781
+#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet
 #http://127.0.0.1:5000/search/ch/gl/efs?request=GetDownloadServiceMetadata
 #http://127.0.0.1:5000/dls/ch/gl/efs/service.xml
 #http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
