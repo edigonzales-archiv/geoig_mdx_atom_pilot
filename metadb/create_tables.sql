@@ -1,3 +1,8 @@
+-- Zuständigkeit (Namen)
+-- "considered" default dataset...
+-- Thema (um auch noch nach Thema abzufragen).
+
+
 CREATE TABLE metadb
 (
   pkuid integer NOT NULL,

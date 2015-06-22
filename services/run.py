@@ -130,7 +130,6 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
     if canton:
         service_url = URL + "/ch/" + canton
         
-        
     if data_responsibility:
         service_url = service_url + "/" + data_responsibility
     
@@ -141,14 +140,12 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         
     return render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified, title = title, identifier = identifier)
 
-# canton und data_responsiblity: wahrscheinlich gibt das noch probleme. Vielleich EINE Suche, die dann eben auch canton/data_resp zurueckliefert und
-# man kann anschliessend sauber die URLs und so zusammenbasteln?
-
 @app.route('/search/ch/<canton>/<data_responsibility>/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/ch/<canton>/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/ch/opensearchdescription.xml', methods=['GET'])
 @app.route('/search/opensearchdescription.xml', methods=['GET'])
 def opensearchdescription_xml(canton='', data_responsibility=''):
+
     return "search/opensearchdescription.xml"
 
 @app.route('/search/ch/<canton>/<data_responsibility>', methods=['GET'])
@@ -157,14 +154,17 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
 @app.route('/search', methods=['GET'])
 def search(canton='', data_responsibility=''):
     request_param = request.args.get('request', '')
+    
+    if request_param == "GetDownloadServiceMetadata":
+        return service_feed_xml(canton, data_responsibility)
+
     return request_param    
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
 
+
+#http://127.0.0.1:5000/search/ch/gl/efs?request=GetDownloadServiceMetadata
 #http://127.0.0.1:5000/dls/ch/gl/efs/service.xml
 #http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
 #http://127.0.0.1:5000/ch/gl/dls?request=GetDownloadServiceMetadata
