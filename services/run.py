@@ -16,6 +16,8 @@ import logging
 import datetime
 from pytz import timezone
 
+URL = "http://www.catais.org/geoig/services/dls"
+
 # DON'T FORGET TO LOG!!!!!!
 
 app = Flask(__name__)
@@ -55,12 +57,15 @@ def service_feed_xml(canton='', data_responsibility=''):
         filter(MetaDb.type==100)    
         
     if canton:
-        print "canton"
-        query = query.filter(MetaDb.canton==canton)    
+        query = query.filter(MetaDb.canton==canton)
+        service_url = URL + "/ch/" + canton
+        
         
     if data_responsibility:
-        print "data_responsibility"
-        query = query.filter(MetaDb.data_responsibility==data_responsibility)    
+        query = query.filter(MetaDb.data_responsibility==data_responsibility)   
+        service_url = service_url + "/" + data_responsibility
+        
+    service_url = service_url + "/service.xml"
         
     for row in query:
         item = {}
@@ -82,7 +87,7 @@ def service_feed_xml(canton='', data_responsibility=''):
     max_modified = my_timezone.localize(max_modified).strftime('%Y-%m-%dT%H:%M:%S%z')
     
     print items
-    return render_template('servicefeed.xml', items = items, max_modified = max_modified)
+    return render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url)
 
 @app.route('/dls/ch/<canton>/<data_responsibility>/<metadb_id>', methods=['GET'])
 @app.route('/dls/ch/<canton>/<metadb_id>', methods=['GET'])
@@ -122,12 +127,19 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         
         items.append(item)
         
+    if canton:
+        service_url = URL + "/ch/" + canton
+        
+        
+    if data_responsibility:
+        service_url = service_url + "/" + data_responsibility
+    
     # These are some variables we use in the header of the template (outside the for loop).
     if len(items):
         title = items[0]['title']
         identifier = items[0]['metadb_id']
         
-    return render_template('datasetfeed.xml', items = items, canton = canton, data_responsibility = data_responsibility, max_modified = max_modified, title = title, identifier = identifier)
+    return render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified, title = title, identifier = identifier)
 
 # canton und data_responsiblity: wahrscheinlich gibt das noch probleme. Vielleich EINE Suche, die dann eben auch canton/data_resp zurueckliefert und
 # man kann anschliessend sauber die URLs und so zusammenbasteln?

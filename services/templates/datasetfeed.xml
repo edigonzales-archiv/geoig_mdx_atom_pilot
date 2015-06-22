@@ -2,12 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss"  xmlns:gml="http://www.opengis.net/gml" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0"  xml:lang="de">
     <title>{{title}}</title>
     <link rel="self" href="http://www.catais.org/geoig/services/dls/{{identifier}}.xml" type="application/atom+xml" hreflang="de" title="Selbstreferenz"></link>
-    <!--TODO: Parent url may change depending on what we are requesting, e.g. .../dls/ch/gl/efs/service.xml or ../dls/ch/so/agi/av/service.xml-->
-    <!-- There will be an ugly double '//' when canton and/or data_responsiblity is missing -->
-    <link rel="up"> href="http://www.catais.org/geoig/services/dls/ch/{{canton}}/{{data_responsibility}}/service.xml"</link>
+    <link rel="up">{{service_url}}/service.xml"</link>
     <!-- We use a geocat.ch entry from Fuerstentum Liechtenstein. -->    
     <link rel="describedby"  href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=7dd0cb7f-43f9-4db4-b83f-66b43a47f943" hreflang="de"></link>
-    <id>http://www.catais.org/geoig/services/dls/ch/{{canton}}/{{data_responsibility}}/{{identifier}}.xml</id>
+    <id>{{service_url}}/{{identifier}}.xml</id>
     <rights>Daten dürfen frei genutzt werden (siehe Lizenzbestimmungen).</rights>
     <updated>{{max_modified}}</updated>
     <author>
