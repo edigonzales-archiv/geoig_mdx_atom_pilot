@@ -25,7 +25,7 @@
             <email>stefan.ziegler@bd.so.ch</email>
         </author>      
         <id>{{service_url}}/{{item['identifier']}}.xml</id>   
-        <link href="{{item['metadata_url']}}" rel="describedby" type="application/vnd.ogc.csw.GetRecordByIdResponse_xml" title="Dataset Metadata"/>   
+        <link href="{{item['metadata_link']}}" rel="describedby" type="application/vnd.ogc.csw.GetRecordByIdResponse_xml" title="Dataset Metadata"/>   
         <link href="{{service_url}}/{{item['identifier']}}.xml" rel="alternate" type="application/atom+xml" title="Dataset Feed" />
         <rights>Daten dürfen frei genutzt werden (siehe Lizenzbestimmungen).</rights>
         <updated>{{item['modified']}}</updated>
