@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- xsi:schemaLocation not found. Important? -->
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:inspire_dls="http://inspire.ec.europa.eu/schemas/inspire_dls/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://a9.com/-/spec/opensearch/1.1/OpenSearch.xsd">
     <ShortName>INSPIRE Download Service</ShortName>
     <Description>INSPIRE Atom Feed Services -- OpenSearch Service</Description>

@@ -23,10 +23,10 @@ import logging
 import datetime
 from pytz import timezone
 
-#SERVICE_URL = "http://www.catais.org/geoig/services/dls"
-#SEARCH_URL = "http://www.catais.org/geoig/services/search"
-SERVICE_URL = "http://127.0.0.1:5000/dls"
-SEARCH_URL = "http://127.0.0.1:5000/search"
+SERVICE_URL = "http://www.catais.org/geoig/services/dls"
+SEARCH_URL = "http://www.catais.org/geoig/services/search"
+#SERVICE_URL = "http://127.0.0.1:5000/dls"
+#SEARCH_URL = "http://127.0.0.1:5000/search"
 
 
 # http://flask-restful.readthedocs.org/en/latest/reqparse.html
