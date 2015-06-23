@@ -5,7 +5,7 @@
     <link rel="self" href="{{service_url}}/service.xml" type="application/atom+xml" hreflang="de" title="INSPIRE Download Service"/>
     <!-- The INSPIRE download service itself is described in geocat.ch. Thanks Fuerstentum Liechtenstein.-->
     <link rel="describedby" href="http://www.geocat.ch/geonetwork/srv/ger/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;elementSetName=full&amp;outputFormat=application/xml&amp;outputSchema=IsoRecord&amp;id=9c0614f8-7268-48df-b702-24f7b2264b8c" hreflang="de" type="application/vnd.ogc.csw.GetRecordByIdResponse_xml" title="Download Service Feed Metadata"/>
-    <link rel="search" href="{{service_url}}/opensearchdescription.xml" type="application/opensearchdescription+xml" title="Opensearch Description"/>
+    <link rel="search" href="{{search_url}}/opensearchdescription.xml" type="application/opensearchdescription+xml" title="Opensearch Description"/>
     <id>{{service_url}}/service.xml</id>
     <rights>Daten dürfen frei genutzt werden (siehe Lizenzbestimmungen).</rights>
     <updated>{{max_modified}}</updated>

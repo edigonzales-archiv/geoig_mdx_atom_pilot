@@ -52,6 +52,7 @@ def service_feed_xml(canton='', data_responsibility=''):
     # If there is no canton and/or data_responsiblity we
     # need to initialize the service_url.
     service_url = SERVICE_URL
+    search_url = SEARCH_URL
 
     # For correct rendering of the datetime we need a timezone.
     # Really not sure about this whole timezone stuff:
@@ -75,10 +76,12 @@ def service_feed_xml(canton='', data_responsibility=''):
     if canton:
         query = query.filter(MetaDb.canton==canton)
         service_url = SERVICE_URL + "/ch/" + canton
+        search_url = SEARCH_URL + "/ch/" + canton
         
     if data_responsibility:
         query = query.filter(MetaDb.data_responsibility==data_responsibility)   
         service_url += "/" + data_responsibility
+        search_url += "/" + data_responsibility
     
     app.logger.debug('SQL: %s', str(query.statement.compile(dialect=sqlite.dialect())))
          
@@ -103,7 +106,9 @@ def service_feed_xml(canton='', data_responsibility=''):
     
     app.logger.debug('service_url: %s', service_url)
 
-    response = make_response(render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url))
+    print search_url
+
+    response = make_response(render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url, search_url = search_url))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
     return response    
 
