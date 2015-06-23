@@ -8,6 +8,7 @@ from flask import render_template
 from flask import make_response
 from flask import abort
 from flask import redirect
+from sqlalchemy.dialects import sqlite
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
@@ -105,6 +106,7 @@ def service_feed_xml(canton='', data_responsibility=''):
 @app.route('/dls/ch/<canton>/<data_responsibility>/<metadb_id>', methods=['GET'])
 @app.route('/dls/ch/<canton>/<metadb_id>', methods=['GET'])
 @app.route('/dls/ch/<metadb_id>', methods=['GET'])
+@app.route('/dls/<metadb_id>', methods=['GET'])
 def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
     metadb_id = metadb_id.split(".")[0]
     
@@ -188,16 +190,20 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
     # Get 'example' datasets. We assume (=hardcoded) that epsg:21781 is the default crs 
     # (and always available).
     # Get only one dataset -> 'distinct on'
+    #query = session.query(OnlineDataset.metadb_id, OnlineDataset.metadb_id, MetaDb.namespace, MetaDb.title, MetaDb.canton) \
     query = session.query(func.max(OnlineDataset.metadb_id), OnlineDataset.metadb_id, MetaDb.namespace, MetaDb.title) \
-    .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) \
-    
+    .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier)
+
+    # Show raw sql query with correct dialect.
+    print str(query.statement.compile(dialect=sqlite.dialect()))
+
     if canton:
-        query.filter(MetaDb.canton==canton)
+        query = query.filter(MetaDb.canton==canton)
     
     if data_responsibility:
-        query.filter(MetaDb.data_responsibility==data_responsibility)
+        query = query.filter(MetaDb.data_responsibility==data_responsibility)
 
-    query.group_by(OnlineDataset.metadb_id).all()
+    query = query.group_by(OnlineDataset.metadb_id).all()
 
     items = []
     for row in query:
@@ -206,6 +212,7 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
         item['namespace'] = row.namespace
         item['title'] = row.title
         items.append(item)
+        
 
     response = make_response(render_template('opensearchdescription.xml', search_url = search_url, mime_types = mime_types, items = items))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
@@ -301,9 +308,6 @@ def search(canton='', data_responsibility=''):
             return redirect(dataset.uri)
     else:
         abort(404)
-    
-
-    return request_param    
 
 if __name__ == '__main__':
     app.run(debug=True)

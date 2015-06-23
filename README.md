@@ -39,7 +39,10 @@ virtualenv venv
 source venv/bin/activate
 pip install flask
 pip install pytz
+pip install psycopg2
 ```
+
+`psycopg2` nur für das Erstellen der INSERT-SQL-Kommandos der amtlichen Vermessung.
 
 ### Apache config file
 
