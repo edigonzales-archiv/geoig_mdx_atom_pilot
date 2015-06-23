@@ -5,7 +5,7 @@ import psycopg2
 import sys
 import uuid
 
-#identifier, namespace, title, abstract, metadata_link, "type", modified, canton, data_responsibility, x_min, y_min, x_max, y_max
+print "INSERT INTO metadb (identifier, title, abstract, \"type\", canton, data_responsibility) VALUES ('3d69c24a-3bc0-42fc-a4f1-3aef480fc5b9', 'Amtliche Vermessung Kanton Solothurn', 'Amtliche Vermessung des Kantons Solothurn.', 1, 'so', 'agi');"
 
 namespace = "http://www.geo.so.ch"
 type = 100

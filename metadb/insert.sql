@@ -17,10 +17,4 @@ INSERT INTO metadb_relation (metadb_id_parent, metadb_id_child) VALUES ('ea5c61e
 INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/supplysecurity/xtf/lv03/supplysecurity.xtf', 'text/x-interlis23', 'INTERLIS23', '21781', 'CH1903/LV03', '2015-04-01 06:00:00');
 INSERT INTO online_dataset (metadb_id, uri, format_mime, format_txt, srs_epsg, srs_txt, modified) VALUES ('9565af3d-9d96-44bb-a9f8-de8e405c56f3', 'http://www.catais.org/geodaten/ch/gl/efs/supplysecurity/gml/lv03/supplysecurity.gml', 'application/gml+xml;version=3.2', 'GML 3.2.1', '21781', 'CH1903/LV03', '2015-04-01 06:00:00');
 
-
--- Kanton Solothurn / Amtliche Vermessung
-INSERT INTO metadb (identifier, title, abstract, "type", canton, data_responsibility) VALUES ('3d69c24a-3bc0-42fc-a4f1-3aef480fc5b9', 'Amtliche Vermessung Kanton Solothurn', 'Amtliche Vermessung des Kantons Solothurn.', 1, 'so', 'agi');
-
-
-
 <div style="float:left;"><img height="200" src="http://mdi.niedersachsen.de/preview_browser_metadata/Schweinswal_2010.jpg" alt="Vorschaugrafik" />
