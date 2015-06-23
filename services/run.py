@@ -7,9 +7,11 @@ from flask import Response
 from flask import render_template
 from flask import make_response
 from flask import abort
+from flask import redirect
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+from sqlalchemy import func
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.orm.exc import NoResultFound 
 from sqlalchemy.orm.exc import MultipleResultsFound
@@ -46,6 +48,10 @@ session = Session(engine)
 @app.route('/dls/ch/service.xml', methods=['GET'])
 @app.route('/dls/service.xml', methods=['GET'])
 def service_feed_xml(canton='', data_responsibility=''):    
+    # If there is no canton and/or data_responsiblity we
+    # need to initialize the service_url.
+    service_url = SERVICE_URL
+
     # For correct rendering of the datetime we need a timezone.
     # Really not sure about this whole timezone stuff:
     # - May I use %z?
@@ -64,7 +70,7 @@ def service_feed_xml(canton='', data_responsibility=''):
         (cast(MetaDb.y_min, sqlalchemy.String) + " " + cast(MetaDb.x_min, sqlalchemy.String) + " " + \
         cast(MetaDb.y_max, sqlalchemy.String)  + " " + cast(MetaDb.x_max, sqlalchemy.String)).label("bbox")). \
         filter(MetaDb.type==100)    
-        
+
     if canton:
         query = query.filter(MetaDb.canton==canton)
         service_url = SERVICE_URL + "/ch/" + canton
@@ -134,6 +140,7 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         
         items.append(item)
     
+    service_url = SERVICE_URL
     if canton:
         service_url = SERVICE_URL + "/ch/" + canton
         
@@ -155,11 +162,13 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
 @app.route('/search/opensearchdescription.xml', methods=['GET'])
 def opensearchdescription_xml(canton='', data_responsibility=''):
     # Create the correct url depending on the request.
+    search_url = SEARCH_URL
+
     if canton:
         search_url = SEARCH_URL + "/ch/" + canton
-        
+
     if data_responsibility:
-        search_url = search_url + "/" + data_responsibility
+        search_url += "/" + data_responsibility
 
     # Get all possible formats (mime types).
     # NEEDS TO BE TESTED!!!
@@ -175,8 +184,30 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
     mime_types = []
     for row in query.distinct().order_by(OnlineDataset.format_mime):
         mime_types.append(row.format_mime)
+        
+    # Get 'example' datasets. We assume (=hardcoded) that epsg:21781 is the default crs 
+    # (and always available).
+    # Get only one dataset -> 'distinct on'
+    query = session.query(func.max(OnlineDataset.metadb_id), OnlineDataset.metadb_id, MetaDb.namespace, MetaDb.title) \
+    .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) \
+    
+    if canton:
+        query.filter(MetaDb.canton==canton)
+    
+    if data_responsibility:
+        query.filter(MetaDb.data_responsibility==data_responsibility)
 
-    response = make_response(render_template('opensearchdescription.xml', search_url = search_url, mime_types = mime_types))
+    query.group_by(OnlineDataset.metadb_id).all()
+
+    items = []
+    for row in query:
+        item = {}
+        item['identifier'] = row.metadb_id
+        item['namespace'] = row.namespace
+        item['title'] = row.title
+        items.append(item)
+
+    response = make_response(render_template('opensearchdescription.xml', search_url = search_url, mime_types = mime_types, items = items))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
     return response    
 
@@ -229,10 +260,45 @@ def search(canton='', data_responsibility=''):
     
         return dataset_feed_xml(dataset.metadb_id, canton, data_responsibility)
         
-    
     elif request_param == "GetSpatialDataSet":
-        print "GetSpatialDataSet"
+        identifier_code = request.args.get('spatial_dataset_identifier_code', '')
+        identifier_namespace = request.args.get('spatial_dataset_identifier_namespace', '')
+        type = request.args.get('type', '')
+        crs = request.args.get('crs', '')
+        # language is ignored
+        # q is ignored
         
+        if not identifier_code:
+            abort(404)
+        if not identifier_namespace:
+            abort(404)
+        if not type:
+            abort(404)
+        if not crs:
+            abort(404)
+
+        # We just need the pure epsg number.
+        epsg = crs.split("/")[-1]
+                    
+        # Find dataset in meta database.
+        try:
+            dataset = session.query(OnlineDataset.uri) \
+                .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier) \
+                .filter(OnlineDataset.metadb_id==identifier_code) \
+                .filter(MetaDb.namespace==identifier_namespace) \
+                .filter(OnlineDataset.format_mime==type) \
+                .filter(OnlineDataset.srs_epsg==epsg).one()
+                
+        # What is the response for these exceptions?
+        except MultipleResultsFound, e:
+            print e
+            abort(404)
+        except NoResultFound, e:
+            print e
+            abort(404)
+            
+        if dataset.uri:
+            return redirect(dataset.uri)
     else:
         abort(404)
     
@@ -244,6 +310,7 @@ if __name__ == '__main__':
 
 
 # Achtung Pluszeichen in Mimetype!
+#http://127.0.0.1:5000/search/ch/gl?request=GetSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=text/x-interlis23&crs=http://www.opengis.net/def/crs/EPSG/0/21781
 #http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml+xml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0/21781
 #http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml%2Bxml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0%2F21781
 #http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet

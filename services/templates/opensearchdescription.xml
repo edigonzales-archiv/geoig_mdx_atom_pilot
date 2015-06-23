@@ -11,14 +11,11 @@
     {%for n in mime_types %}
     <Url type="{{n}}" rel="results" template="{{search_url}}?request=GetSpatialDataSet&amp;spatial_dataset_identifier_code={inspire_dls:spatial_dataset_identifier_code?}&amp;spatial_dataset_identifier_namespace={inspire_dls:spatial_dataset_identifier_namespace?}&amp;type={{n}}&amp;crs={inspire_dl:crs?}&amp;language={language?}&amp;q={searchTerms?}"/>
     {%endfor%}        
-
     <Contact>stefan.ziegler@bd.so.ch</Contact>
     <LongName>INSPIRE Atom Feed Services</LongName>
-    
-    <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="tba_denkmalschutzobjekte" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/4258" language="de" title="Denkmalschutzobjekte  ETRS89" count="1" />
-    <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="aku:arch_perimter" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/4258" language="de" title="Archäologische Perimeter  ETRS89" count="1" />
-    <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="abi:hoheitsgrenzen" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/21781" language="de" title="Hoheitsgrenzen Liechtenstein  LV03" count="1" />
-    <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="http://www.llv.li" inspire_dls:spatial_dataset_identifier_code="abi_geographical_names" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/21781" language="de" title="Geographische Bezeichnungen  LV03" count="1" />
+    {%for item in items %}
+    <Query role="example" inspire_dls:spatial_dataset_identifier_namespace="{{item['namespace']}}" inspire_dls:spatial_dataset_identifier_code="{{item['identifier']}}" inspire_dls:crs="http://www.opengis.net/def/crs/EPSG/0/21781" language="de" title="{{item['title']}}" count="1" />
+    {%endfor%}            
     <Developer>Stefan Ziegler</Developer>
     <Language>de</Language>
 </OpenSearchDescription>
