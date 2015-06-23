@@ -14,3 +14,5 @@ CREATE TABLE amtliche_vermessung
 );
 
 INSERT INTO amtliche_vermessung (bfsnr, canton, gem_name, updated, spatial_dataset_identifier_code, spatial_dataset_identifier_namespace, mime_type, crs, service_feed) VALUES (2549, 'so', 'Kammersrohr', '2015-04-01 06:00:00', '51f3f236-9ed5-424e-b201-93998801d7c2', 'http://www.geo.so.ch', 'text/x-interlis1', 'http://www.opengis.net/def/crs/EPSG/0/21781', 'http://www.catais.org/geoig/services/dls/ch/so/agi/service.xml');
+
+INSERT INTO amtliche_vermessung (bfsnr, canton, gem_name, updated, spatial_dataset_identifier_code, spatial_dataset_identifier_namespace, mime_type, crs, service_feed) VALUES (2524, 'so', 'Hüniken', '2015-04-01 06:00:00', '0c98aa82-4974-4b65-beb2-c32789b20697', 'http://www.geo.so.ch', 'text/x-interlis1', 'http://www.opengis.net/def/crs/EPSG/0/21781', 'http://www.catais.org/geoig/services/dls/ch/so/agi/service.xml');
