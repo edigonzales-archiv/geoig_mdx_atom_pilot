@@ -7,6 +7,7 @@ import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,12 +24,6 @@ public class OpenSearchDescription {
         this.openSearchDescriptionUrl = openSearchDescriptionUrl; 
         logger.debug(openSearchDescriptionUrl);
         
-        InputStream is = new URL(openSearchDescriptionUrl).openStream();
-
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema        schema        = ( xsdSchema == null || xsdSchema.trim().length() == 0 )
-                                      ? null : schemaFactory.newSchema( new File( xsdSchema ) );
-        JAXBContext   jaxbContext   = JAXBContext.newInstance( jaxbElement.getClass().getPackage().getName() );        
         
 
         
