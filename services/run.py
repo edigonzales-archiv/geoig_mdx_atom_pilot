@@ -92,17 +92,19 @@ def service_feed_xml(canton='', data_responsibility=''):
         item['title'] = row.title
         item['abstract'] = row.abstract
         item['metadata_link'] = row.metadata_link
-        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')        
+        item['modified'] = my_timezone.localize(row.modified).isoformat('T')
         item['canton'] = row.canton
         item['bbox'] = row.bbox
         
         if row.modified > max_modified:
             max_modified = row.modified
         
+        app.logger.debug("modified: " + item['modified'])
+        
         items.append(item)
     
     # This is for the header of the template (outside the for loop).
-    max_modified = my_timezone.localize(max_modified).strftime('%Y-%m-%dT%H:%M:%S%z')
+    max_modified = my_timezone.localize(max_modified).isoformat('T')
     
     app.logger.debug('service_url: %s', service_url)
 
@@ -146,7 +148,7 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         item['format_txt'] = row.format_txt
         item['srs_epsg'] = row.srs_epsg
         item['srs_txt'] = row.srs_txt
-        item['modified'] = my_timezone.localize(row.modified).strftime('%Y-%m-%dT%H:%M:%S%z')
+        item['modified'] = my_timezone.localize(row.modified).isoformat('T')
         item['title'] = row.title
         item['abstract'] = row.abstract
         item['dataset_title'] = row.dataset_title
@@ -337,26 +339,3 @@ if __name__ == '__main__':
     handler.setLevel(logging.DEBUG)
     app.logger.addHandler(handler)    
     app.run(debug=True)
-
-
-# Achtung Pluszeichen in Mimetype!
-#http://127.0.0.1:5000/search/ch/gl?request=GetSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=text/x-interlis23&crs=http://www.opengis.net/def/crs/EPSG/0/21781
-#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml+xml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0/21781
-#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet&spatial_dataset_identifier_code=9565af3d-9d96-44bb-a9f8-de8e405c56f3&spatial_dataset_identifier_namespace=http://www.geo.gl.ch&type=application/gml%2Bxml;version=3.2&crs=http://www.opengis.net/def/crs/EPSG/0%2F21781
-#http://127.0.0.1:5000/search/ch/gl?request=DescribeSpatialDataSet
-#http://127.0.0.1:5000/search/ch/gl/efs?request=GetDownloadServiceMetadata
-#http://127.0.0.1:5000/dls/ch/gl/efs/service.xml
-#http://127.0.0.1:5000/ch/gl/search/opensearchdescription.xml
-#http://127.0.0.1:5000/ch/gl/dls?request=GetDownloadServiceMetadata
-#http://127.0.0.1:5000/ch/gl/dls/service.xml
-
-#http://geodaten.llv.li/atom/service.xml
-
-#http://geodaten.llv.li/atom/search/opensearchdescription.xml
-#http://geodaten.llv.li/atom/search/search.php?request=GetDownloadServiceMetadata
-#http://geodaten.llv.li/atom/search/search.php?request=describespatialdataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte
-
-#http://geodaten.llv.li/atom/search/search.php?request=GetSpatialDataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte&language=de&crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F2056&mediatype=text%2Fxml%3Bsubtype%3Dgml%2F3.1.1
-#http://geodaten.llv.li/atom/search/search.php?request=GetSpatialDataset&spatial_dataset_identifier_code=tba_denkmalschutzobjekte&language=de&crs=http://www.opengis.net/def/crs/EPSG/0/2056&mediatype=text/xml;subtype=gml/3.1.1
-
-#http://geodaten.llv.li/atom/search/search.php?q=test   
