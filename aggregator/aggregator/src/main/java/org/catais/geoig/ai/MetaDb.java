@@ -56,5 +56,16 @@ public class MetaDb {
 		return entries;
 	}
 	
+	public void shutdown() {
+		try {
+			if(connection != null) {
+				connection.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+	}
+	
 
 }
