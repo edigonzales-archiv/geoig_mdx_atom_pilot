@@ -21,10 +21,10 @@ public class ServiceFeedEntry {
 	
 	private String title;
 	private String summary;
-	private String uri;
+	private String uri; // equal to alternate link?
 	private Date updated;
-	private String alternateLink;
-	private String describebyLink;
+	private String datasetFeedLink;
+	private String datasetDescriptionLink;
 	private ArrayList<String> crs = new ArrayList<String>();
 	private String spatialDatasetIdentifierCode;
 	private String spatialDatasetIdentifierNamespace;
@@ -41,9 +41,9 @@ public class ServiceFeedEntry {
         	String rel = link.getRel();
         	
         	if (rel.equalsIgnoreCase("alternate")) {
-        		alternateLink = link.getHref();
+        		datasetFeedLink = link.getHref();
         	} else if (rel.equalsIgnoreCase("describeby")) {
-        		describebyLink = link.getHref();
+        		datasetDescriptionLink = link.getHref();
         	}
         }   
         
@@ -72,6 +72,14 @@ public class ServiceFeedEntry {
 	
 	public String getSpatialDatasetIdentifierCode() {
 		return spatialDatasetIdentifierCode;
+	}
+	
+	public String getSpatialDatasetIdentifierNamespace() {
+		return spatialDatasetIdentifierNamespace;
+	}
+	
+	public String getDatasetFeedLink() {
+		return datasetFeedLink;
 	}
 
 }

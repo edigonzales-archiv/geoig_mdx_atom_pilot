@@ -10,8 +10,11 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.catais.inspire.dls.DownloadService;
+import org.catais.inspire.dls.DatasetFeed;
+import org.catais.inspire.dls.DatasetFeedEntry;
+import org.catais.inspire.dls.ServiceFeed;
 import org.catais.inspire.dls.OpenSearchDescription;
+import org.catais.inspire.dls.ServiceFeedEntry;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -34,17 +37,27 @@ public class App
         	ArrayList entries = metadb.getEntries();
         	metadb.shutdown(); // Shutdown after download etc. since we need to update the dates.
         	
-        	DownloadService dls = new DownloadService("http://www.catais.org/geoig/services/dls/ch/so/agi/service.xml");
-//        	DownloadService dls = new DownloadService("http://www.weichand.de/inspire/dls/verwaltungsgrenzen.xml");
+        	ServiceFeed sf = new ServiceFeed("http://www.catais.org/geoig/services/dls/ch/gl/service.xml");
         	
-        	String osdUrl = dls.getOpensearchDescriptionUrl();
+        	// Wrap this in a class called 'DownloadService'...
+
+        	// returns opensearch description of service feed
+        	String osdl = sf.getOpensearchDescriptionLink();
+        	logger.debug(osdl);
         	
+        	// this returns the first servicefeed entry = 'dataset'
+        	String code = ((ServiceFeedEntry)sf.getDatasets().get(0)).getSpatialDatasetIdentifierCode();
+        	String namespace = ((ServiceFeedEntry)sf.getDatasets().get(0)).getSpatialDatasetIdentifierNamespace();
+        	String datasetFeedUrl = ((ServiceFeedEntry)sf.getDatasets().get(0)).getDatasetFeedLink();
+
+        	// now we want to know what dataset alternatives exists
+        	DatasetFeed df = new DatasetFeed(datasetFeedUrl);
+        	ArrayList<DatasetFeedEntry> datasetAlternatives = df.getDatasetAlternatives();
         	
-//        	logger.debug("Feed Title: " + dls.getTitle());
-//        	logger.debug("Dataset Names: " + dls.getDatasetNames());
-        	
-        	OpenSearchDescription osd = new OpenSearchDescription(osdUrl);
-        	
+        	for (DatasetFeedEntry datasetAlternative : datasetAlternatives) {
+        		logger.debug(datasetAlternative.getDatasetAlternativeLink());        		
+        		logger.debug(datasetAlternative.getMimeType());        		
+        	}
         	
     	} catch (ClassNotFoundException e) {
     		e.printStackTrace();

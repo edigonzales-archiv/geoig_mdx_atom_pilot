@@ -18,20 +18,20 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
-public class DownloadService {
-	static final Logger logger = LogManager.getLogger(DownloadService.class.getName());
+public class ServiceFeed {
+	static final Logger logger = LogManager.getLogger(ServiceFeed.class.getName());
 	
 	private String serviceFeedUrl;
 	
 	private ArrayList<String> datasetNames = new ArrayList<String>();
-	private HashMap<String, ServiceFeedEntry> datasets = new HashMap<String, ServiceFeedEntry>();
+	private ArrayList<ServiceFeedEntry> datasets = new ArrayList<ServiceFeedEntry>();
 	private String feedTitle;
 	private Date updated;
-	private String selfLink;
-	private String describebyLink;
-	private String searchLink;
+	private String serviceFeedLink;
+	private String serviceFeedDescriptionLink;
+	private String opensearchDescriptionLink;
 
-	public DownloadService(String serviceFeedUrl) throws MalformedURLException, IOException, FeedException {
+	public ServiceFeed(String serviceFeedUrl) throws MalformedURLException, IOException, FeedException {
         this.serviceFeedUrl = serviceFeedUrl;   
         init();
 	}
@@ -52,11 +52,11 @@ public class DownloadService {
         	String rel = link.getRel();
         	
         	if (rel.equalsIgnoreCase("self")) {
-        		selfLink = link.getHref();
+        		serviceFeedLink = link.getHref();
         	} else if (rel.equalsIgnoreCase("describeby")) {
-        		describebyLink = link.getHref();
+        		serviceFeedDescriptionLink = link.getHref();
         	} else if (rel.equalsIgnoreCase("search")) {
-        		searchLink = link.getHref();
+        		opensearchDescriptionLink = link.getHref();
         	}
         }  
     	
@@ -64,12 +64,29 @@ public class DownloadService {
     	List<SyndEntry> entries = feed.getEntries();
     	for (SyndEntry entry: entries) {    		
     		ServiceFeedEntry sfe = new ServiceFeedEntry(entry);
-    		datasets.put(sfe.getSpatialDatasetIdentifierCode(), sfe);   
- 
+    		datasets.add(sfe);   
     		datasetNames.add(sfe.getTitle());
     	}
-    	logger.debug(datasets);
 	}
+	
+	// Do I need this?
+	// ServiceFeed returns everything I need to know to deal with DatasetFeed.
+	public ArrayList getDatasetAlternatives(String code, String namespace) throws MalformedURLException, IOException, FeedException {
+		for (ServiceFeedEntry sfe : datasets) {
+			String sfeCode = sfe.getSpatialDatasetIdentifierCode();
+			String sfeNamespace = sfe.getSpatialDatasetIdentifierNamespace();
+			
+			if (sfeCode.equalsIgnoreCase(code) && sfeNamespace.equalsIgnoreCase(namespace)) {
+				DatasetFeed dsf = new DatasetFeed(sfe.getDatasetFeedLink());
+				return dsf.getDatasetAlternatives();
+			}
+			// code AND namespace not found
+			return new ArrayList();
+		}
+		// no entries in servicefeed
+		return new ArrayList();
+	}
+	
 	
 	/**
 	 * This method is used to retrieve an unsorted list with dataset names
@@ -85,7 +102,7 @@ public class DownloadService {
 	 * in the service feed.
 	 * @return HashMap with available datasets.
 	 */
-	public HashMap getDatasets() {
+	public ArrayList getDatasets() {
 		return datasets;
 	}
 	
@@ -93,8 +110,8 @@ public class DownloadService {
 	 * This method returns the url of the OpenSearch Description.
 	 * @return String OpenSearch Description Url.
 	 */
-	public String getOpensearchDescriptionUrl() {
-		return searchLink;
+	public String getOpensearchDescriptionLink() {
+		return opensearchDescriptionLink;
 	}
 
 	/**
