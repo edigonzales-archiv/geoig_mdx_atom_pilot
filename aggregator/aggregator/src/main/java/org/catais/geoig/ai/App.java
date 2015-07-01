@@ -39,7 +39,7 @@ public class App
         	
         	ServiceFeed sf = new ServiceFeed("http://www.catais.org/geoig/services/dls/ch/gl/service.xml");
         	
-        	// Wrap this in a class called 'DownloadService'...
+        	// Wrap all this in a class called 'DownloadService'...
 
         	// returns opensearch description of service feed
         	String osdl = sf.getOpensearchDescriptionLink();
@@ -50,7 +50,7 @@ public class App
         	String namespace = ((ServiceFeedEntry)sf.getDatasets().get(0)).getSpatialDatasetIdentifierNamespace();
         	String datasetFeedUrl = ((ServiceFeedEntry)sf.getDatasets().get(0)).getDatasetFeedLink();
 
-        	// now we want to know what dataset alternatives exists
+        	// now we want to know what dataset alternatives exists for this specific dataset
         	DatasetFeed df = new DatasetFeed(datasetFeedUrl);
         	ArrayList<DatasetFeedEntry> datasetAlternatives = df.getDatasetAlternatives();
         	
