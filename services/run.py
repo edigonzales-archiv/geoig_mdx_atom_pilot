@@ -11,11 +11,14 @@ from flask import redirect
 from sqlalchemy.dialects import sqlite
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
+from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy import func
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.orm.exc import NoResultFound 
 from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy import Table, MetaData, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import mapper
 import sqlalchemy
 from logging.handlers import RotatingFileHandler 
 from logging import Formatter
@@ -41,6 +44,12 @@ Base.prepare(engine, reflect=True)
 MetaDb = Base.classes.metadb
 OnlineDataset = Base.classes.online_dataset
 session = Session(engine)
+
+# Sqlite virtual table ist not automapped.
+# Not sure why. Missing Pk? But I did add one.
+m = MetaData()
+m.reflect(engine)
+FtsMetaDb = Table('fts_metadb', m)
 
 @app.route('/dls/ch/<canton>/<data_responsibility>/service.xml', methods=['GET'])
 @app.route('/dls/ch/<canton>/service.xml', methods=['GET'])
@@ -107,8 +116,6 @@ def service_feed_xml(canton='', data_responsibility=''):
     max_modified = my_timezone.localize(max_modified).isoformat('T')
     
     app.logger.debug('service_url: %s', service_url)
-
-    print search_url
 
     response = make_response(render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url, search_url = search_url))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
@@ -216,7 +223,7 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
     .join(MetaDb, OnlineDataset.metadb_id==MetaDb.identifier)
 
     # Show raw sql query with correct dialect.
-    print str(query.statement.compile(dialect=sqlite.dialect()))
+    #print str(query.statement.compile(dialect=sqlite.dialect()))
 
     if canton:
         query = query.filter(MetaDb.canton==canton)
@@ -244,9 +251,37 @@ def opensearchdescription_xml(canton='', data_responsibility=''):
 @app.route('/search/ch/<canton>', methods=['GET'])
 @app.route('/search/ch', methods=['GET'])
 @app.route('/search', methods=['GET'])
-def search(canton='', data_responsibility=''):
-    request_param = request.args.get('request', '')
+def search(canton='', data_responsibility=''):    
+    params_len = len(request.args)
     
+    if params_len == 0:
+        abort(404)
+    
+    # Do the full text search only if 'q' is the only request parameter.
+    query_param = request.args.get('q', '')
+        
+    if params_len == 1 and query_param:
+        q = query_param.replace(' ', '*') + '*'
+        print q
+        
+        # Find all datasets that match the search criteria
+        query = session.query(FtsMetaDb) 
+        
+        if canton:
+            query = query.filter(FtsMetaDb.canton==canton)
+        
+        if data_responsibility:
+            query = query.filter(FtsMetaDb.data_responsibility==data_responsibility)   
+            
+        query = query.filter("fts_metadb MATCH '"+q+"'")
+        
+        for row in query:
+            print row
+                  
+        
+    # Now we turn into 'service mode' and try to fulfill the requests.
+    request_param = request.args.get('request', '')
+
     if request_param == "GetDownloadServiceMetadata":
         app.logger.debug('GetDownloadServiceMetadata')
         return service_feed_xml(canton, data_responsibility)
