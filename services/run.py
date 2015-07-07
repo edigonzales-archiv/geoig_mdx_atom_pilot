@@ -24,6 +24,7 @@ from logging.handlers import RotatingFileHandler
 from logging import Formatter
 import logging
 import datetime
+import urllib
 from pytz import timezone
 
 SERVICE_URL = "http://www.catais.org/geoig/services/dls"
@@ -261,10 +262,11 @@ def search(canton='', data_responsibility=''):
     query_param = request.args.get('q', '')
         
     if params_len == 1 and query_param:
+        # Add some prefixes/wildcards. Not really sure how usefull this is.
+        # I really do not understand this FTS.
         q = query_param.replace(' ', '*') + '*'
-        print q
         
-        # Find all datasets that match the search criteria
+        # Find all datasets that match the search criteria.
         query = session.query(FtsMetaDb) 
         
         if canton:
@@ -275,10 +277,28 @@ def search(canton='', data_responsibility=''):
             
         query = query.filter("fts_metadb MATCH '"+q+"'")
         
+        items = []
         for row in query:
             print row
-                  
-        
+            item = {}
+            item['identifier'] = row.identifier
+            item['namespace'] = row.namespace
+            item['title'] = row.title
+            item['abstract'] = row.abstract
+            item['modified'] = row.modified
+            item['format_mime'] = urllib.quote(row.format_mime)
+            item['format_txt'] = row.format_txt
+            item['srs_epsg'] = urllib.quote("http://www.opengis.net/def/crs/EPSG/0/" + str(row.srs_epsg))
+            item['srs_txt'] = row.srs_txt
+            item['uri'] = row.uri
+            items.append(item)
+            
+            print urllib.quote(row.format_mime)
+
+        response = make_response(render_template('results.html', items = items))
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return response    
+
     # Now we turn into 'service mode' and try to fulfill the requests.
     request_param = request.args.get('request', '')
 
