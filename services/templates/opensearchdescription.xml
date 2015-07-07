@@ -17,4 +17,6 @@
     {%endfor%}            
     <Developer>Stefan Ziegler</Developer>
     <Language>de</Language>
+    <Image height="16" width="16" type="image/x-icon">http://www.catais.org/geoig/favicon.ico</Image>
+    <Image height="64" width="64" type="image/png">http://www.catais.org/geoig/opensearch64.png</Image>    
 </OpenSearchDescription>
