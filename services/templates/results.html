@@ -1,24 +1,42 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<title>What are you, a fucking park ranger?</title>
-<meta charset="utf-8">
+  <meta charset="utf-8">
+
+  <title>When you pray for rain you gotta deal with the mud too.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
 </head>
-<body>
-Good old ugly html table. CSS is your friend.
-<br>
-<br>
-<table border="1">
-<tr>
-<th>ID</th>
-<th>Description</th>
-<th>Modified</th>
-<th>Metadata</th>
-<th>Dataset feed</th>
-<th>SRS</th>
-<th>Format</th>
-<th>Download</th>
-</tr>
+
+<body style="background-color: #EDEDED !important;">
+  <header>
+  </header>
+
+  <main>
+    <div class="container">
+
+
+      <table class="hoverable bordered responsive-table">
+        <thead>
+          <tr>
+            <th data-field="id">ID</th>
+            <th data-field="desc">Description</th>
+            <th data-field="modified">Modified</th>
+            <th data-field="metadata">Metadata</th>
+            <th data-field="datasetfeed">Dataset feed</th>
+            <th data-field="srs">SRS</th>
+            <th data-field="format">Format</th>
+            <th data-field="download">Download</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        
 {%for item in items %}
 <tr>
 <td>{{item['identifier']}}<br>{{item['namespace']}}<br></td>
@@ -31,7 +49,11 @@ Good old ugly html table. CSS is your friend.
 <td><a href="{{item['uri']}}">Link</a></td>
 </tr>
 {%endfor%}
-</table>
+        
+        </tbody>
+      </table>
+
+    </div>
+  </main>
 </body>
 </html>
-

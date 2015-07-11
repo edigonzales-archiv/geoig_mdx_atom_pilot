@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<title>What are you, a fucking park ranger?</title>
+<meta charset="utf-8">
+</head>
+<body>
+Good old ugly html table. CSS is your friend.
+<br>
+<br>
+<table border="1">
+<tr>
+<th>ID</th>
+<th>Description</th>
+<th>Modified</th>
+<th>Metadata</th>
+<th>Dataset feed</th>
+<th>SRS</th>
+<th>Format</th>
+<th>Download</th>
+</tr>
+{%for item in items %}
+<tr>
+<td>{{item['identifier']}}<br>{{item['namespace']}}<br></td>
+<td><b>{{item['title']}}</b><br><br>{{item['abstract']}}</td>
+<td>{{item['modified']}}</td>
+<td>geocat.ch</td>
+<td><a href="http://www.catais.org/geoig/services/search?request=DescribeSpatialDataSet&spatial_dataset_identifier_code={{item['identifier']}}&spatial_dataset_identifier_namespace={{item['namespace']}}&type={{item['format_mime']}}&crs={{item['srs_epsg']}}" target="_blank">Atom</a></td>
+<td>{{item['srs_txt']}}</td>
+<td>{{item['format_txt']}}</td>
+<td><a href="{{item['uri']}}">Link</a></td>
+</tr>
+{%endfor%}
+</table>
+</body>
+</html>
+
