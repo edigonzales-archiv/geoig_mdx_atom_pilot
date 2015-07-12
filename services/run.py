@@ -108,6 +108,7 @@ def service_feed_xml(canton='', data_responsibility=''):
         
         if row.modified > max_modified:
             max_modified = row.modified
+            max_modified_formated = my_timezone.localize(row.modified).isoformat('T')            
         
         app.logger.debug("modified: " + item['modified'])
         
@@ -118,7 +119,7 @@ def service_feed_xml(canton='', data_responsibility=''):
     
     app.logger.debug('service_url: %s', service_url)
 
-    response = make_response(render_template('servicefeed.xml', items = items, max_modified = max_modified, service_url = service_url, search_url = search_url))
+    response = make_response(render_template('servicefeed.xml', items = items, max_modified_formated = max_modified, service_url = service_url, search_url = search_url))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
     return response    
 
@@ -164,6 +165,7 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         
         if row.modified > max_modified:
             max_modified = row.modified
+            max_modified_formated = my_timezone.localize(row.modified).isoformat('T')
         
         items.append(item)
     
@@ -181,7 +183,7 @@ def dataset_feed_xml(metadb_id, canton='', data_responsibility=''):
         
     app.logger.debug('service_url: %s', service_url)
 
-    response = make_response(render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified, title = title, identifier = identifier))
+    response = make_response(render_template('datasetfeed.xml', items = items, service_url = service_url, max_modified = max_modified_formated, title = title, identifier = identifier))
     response.headers['Content-Type'] = 'text/xml; charset=utf-8'
     return response    
 
